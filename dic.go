@@ -20,11 +20,10 @@ func (dictionary *Dictionary) bytesKey() []byte {
 }
 
 func (dictionary *Dictionary) Break(target []byte) *Dictionary {
-	breakIterative(dictionary, target)
-	return nil
+	return breakIterative(dictionary, target)
 }
 
-func breakIterative(dictionary *Dictionary, target []byte) {
+func breakIterative(dictionary *Dictionary, target []byte) *Dictionary {
 
 	for pos0 := 0; pos0 < len(Keyspace); pos0++ {
 		dictionary.Key[0] = Keyspace[pos0]
@@ -42,9 +41,10 @@ func breakIterative(dictionary *Dictionary, target []byte) {
 								dictionary.Key[6] = Keyspace[pos6]
 								for pos7 := 0; pos7 < len(Keyspace); pos7++ {
 									dictionary.Key[7] = Keyspace[pos7]
-									if bytes.Equal(DesDecryption(Keyspace, target), []byte("sueltito")) {
+									if bytes.Equal(DesDecryption(dictionary.Key, target), []byte("sueltito")) {
 										fmt.Println("FOUND!!!!!")
-										fmt.Printf("%s", dictionary.Key)
+										fmt.Printf("%s\n", dictionary.Key)
+										return dictionary
 									}
 
 								}
@@ -55,4 +55,5 @@ func breakIterative(dictionary *Dictionary, target []byte) {
 			}
 		}
 	}
+	return nil
 }
