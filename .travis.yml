@@ -1,0 +1,29 @@
+language: go
+
+go:
+- 1.9
+- master
+
+before_script:
+- go get github.com/andreburgaud/crypt2go/ecb
+
+script:
+- "./build.sh"
+
+os:
+    - osx
+    - linux
+
+deploy:
+  provider: releases
+  api_key:
+    secure: ${SECURE_K}
+  file: 
+    - releases/desbreaker-linux-amd64
+    - releases/desbreaker-linux-i386
+    - releases/desbreaker-win-amd64
+    - releases/desbreaker-win-i386
+    - releases/desbreaker-osx-amd64
+  on:
+    repo: mtenrero/DESBreaker
+    tags: true
