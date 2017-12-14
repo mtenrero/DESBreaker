@@ -5,12 +5,14 @@ import (
 	"fmt"
 )
 
+//  Keyspace for Brute Force attack
 var Keyspace = []byte("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
 
 type Dictionary struct {
 	Key []byte
 }
 
+// NewDictionary initializes a new BruteForce Dictionary
 func NewDictionary() *Dictionary {
 	return &Dictionary{Key: []byte("aaaaaaaa")}
 }
@@ -19,11 +21,12 @@ func (dictionary *Dictionary) bytesKey() []byte {
 	return []byte(dictionary.Key)
 }
 
-func (dictionary *Dictionary) Break(target []byte) *Dictionary {
-	return breakIterative(dictionary, target)
+// Break executes a Brute Force Attack over a DES encrypted []bytes
+func (dictionary *Dictionary) Break(target, known []byte) *Dictionary {
+	return breakIterative(dictionary, target, known)
 }
 
-func breakIterative(dictionary *Dictionary, target []byte) *Dictionary {
+func breakIterative(dictionary *Dictionary, target, known []byte) *Dictionary {
 
 	for pos0 := 0; pos0 < len(Keyspace); pos0++ {
 		dictionary.Key[0] = Keyspace[pos0]
@@ -41,7 +44,7 @@ func breakIterative(dictionary *Dictionary, target []byte) *Dictionary {
 								dictionary.Key[6] = Keyspace[pos6]
 								for pos7 := 0; pos7 < len(Keyspace); pos7++ {
 									dictionary.Key[7] = Keyspace[pos7]
-									if bytes.Equal(DesDecryption(dictionary.Key, target), []byte("sueltito")) {
+									if bytes.Equal(DesDecryption(dictionary.Key, target), known) {
 										fmt.Println("FOUND!!!!!")
 										fmt.Printf("%s\n", dictionary.Key)
 										return dictionary
